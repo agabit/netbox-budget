@@ -1,0 +1,158 @@
+{% extends 'generic/object.html' %}
+{% load budget_filters %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col col-md-6">
+        <div class="card">
+            <h5 class="card-header">Budget Plan</h5>
+            <div class="card-body">
+                <table class="table table-hover attr-table">
+                    <tr>
+                        <th scope="row">Year</th>
+                        <td>{{ object.year }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Project Name</th>
+                        <td>{{ object.project_name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">PROXY Number</th>
+                        <td>{{ object.proxy_number|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Nomenclature Code</th>
+                        <td>{{ object.nomenclature_code|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Device</th>
+                        <td>
+                            {% if object.device %}
+                                <a href="{{ object.device.get_absolute_url }}">{{ object.device }}</a>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Budget Type</th>
+                        <td>{{ object.get_budget_type_display }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Site / Budget</th>
+                        <td>{{ object.get_site_budget_display }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Unit</th>
+                        <td>{{ object.get_unit_display }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Planned Quantity</th>
+                        <td>{{ object.planned_quantity }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Price per Unit (KZT)</th>
+                        <td>{{ object.price_per_unit|format_kzt }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Total Sum</th>
+                        <td><strong>{{ object.total_sum|format_kzt }}</strong></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Agreed Budget</th>
+                        <td>{{ object.agreed_budget|format_kzt }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Shortfall</th>
+                        <td>
+                            {% if object.shortfall > 0 %}
+                                <span class="badge bg-danger text-white">{{ object.shortfall|format_kzt_signed }}</span>
+                            {% elif object.shortfall < 0 %}
+                                <span class="badge bg-success text-white">{{ object.shortfall|format_kzt_signed }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary text-white">0 KZT</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col col-md-6">
+        <div class="card">
+            <h5 class="card-header">Procurement</h5>
+            <div class="card-body">
+                <table class="table table-hover attr-table">
+                    <tr>
+                        <th scope="row">Tender Name</th>
+                        <td>{{ object.tender_name|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Supplier</th>
+                        <td>
+                            {% if object.supplier %}
+                                <a href="{{ object.supplier.get_absolute_url }}">{{ object.supplier }}</a>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Contract</th>
+                        <td>
+                            {% if object.contract %}
+                                <a href="{{ object.contract.get_absolute_url }}">{{ object.contract }}</a>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Commercial Proposal</th>
+                        <td>
+                            {% if object.commercial_proposal_url %}
+                                <a href="{{ object.commercial_proposal_url }}" target="_blank">
+                                    Open file
+                                </a>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <h5 class="card-header">Tenders</h5>
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>End Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tender in object.tenders.all %}
+                        <tr class="table-{{ tender.status_color }}">
+                            <td><a href="{{ tender.get_absolute_url }}">{{ tender.tender_name }}</a></td>
+                            <td>
+                                <span class="badge bg-{{ tender.status_color }} text-white">
+                                    {{ tender.get_status_display }}
+                                </span>
+                            </td>
+                            <td>{{ tender.end_date|default:"—" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-muted">No tenders found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

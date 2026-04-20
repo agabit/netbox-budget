@@ -1,0 +1,138 @@
+{% extends 'generic/object.html' %}
+{% load budget_filters %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col col-md-6">
+        <div class="card">
+            <h5 class="card-header">Tender</h5>
+            <div class="card-body">
+                <table class="table table-hover attr-table">
+                    <tr>
+                        <th scope="row">Tender Name</th>
+                        <td>{{ object.tender_name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Status</th>
+                        <td>
+                            <span class="badge bg-{{ object.status_color }} text-white">
+                                {{ object.get_status_display }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Budget Plan</th>
+                        <td>
+                            <a href="{{ object.budget_plan.get_absolute_url }}">
+                                {{ object.budget_plan }}
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Start Date</th>
+                        <td>{{ object.start_date|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">End Date</th>
+                        <td>{{ object.end_date|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Responsible Person</th>
+                        <td>{{ object.responsible_person|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Expected Delivery Date</th>
+                        <td>{{ object.expected_delivery_date|default:"—" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col col-md-6">
+        <div class="card">
+            <h5 class="card-header">Budget Plan Details</h5>
+            <div class="card-body">
+                <table class="table table-hover attr-table">
+                    <tr>
+                        <th scope="row">Year</th>
+                        <td>{{ object.budget_plan.year }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">PROXY Number</th>
+                        <td>{{ object.budget_plan.proxy_number|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Budget Type</th>
+                        <td>{{ object.budget_plan.get_budget_type_display }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Site / Budget</th>
+                        <td>{{ object.budget_plan.get_site_budget_display }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Planned Quantity</th>
+                        <td>{{ object.budget_plan.planned_quantity }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Total Sum (KZT)</th>
+                        <td><strong>{{ object.budget_plan.total_sum|format_kzt }}</strong></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Agreed Budget (KZT)</th>
+                        <td>{{ object.budget_plan.agreed_budget|format_kzt }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Shortfall (KZT)</th>
+                        <td>
+                            {% if object.budget_plan.shortfall > 0 %}
+                                <span class="badge bg-danger text-white">{{ object.budget_plan.shortfall|format_kzt_signed }}</span>
+                            {% elif object.budget_plan.shortfall < 0 %}
+                                <span class="badge bg-success text-white">{{ object.budget_plan.shortfall|format_kzt_signed }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary text-white">0 KZT</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <h5 class="card-header">Procurement Result</h5>
+            <div class="card-body">
+                <table class="table table-hover attr-table">
+                    <tr>
+                        <th scope="row">Supplier</th>
+                        <td>
+                            {% if object.supplier %}
+                                <a href="{{ object.supplier.get_absolute_url }}">{{ object.supplier }}</a>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Winner Supplier</th>
+                        <td>
+                            {% if object.winner_supplier %}
+                                <a href="{{ object.winner_supplier.get_absolute_url }}">{{ object.winner_supplier }}</a>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Contract</th>
+                        <td>
+                            {% if object.contract %}
+                                <a href="{{ object.contract.get_absolute_url }}">{{ object.contract }}</a>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
