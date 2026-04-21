@@ -26,6 +26,7 @@ class BudgetPlan(NetBoxModel):
         ('draft', 'Draft'),
         ('approved', 'Approved'),
         ('cancelled', 'Cancelled'),
+        ('donated', 'Donated'),
     ]
     NOMENCLATURE_CHOICES = [
         ('need', 'Need item code'),
@@ -208,3 +209,36 @@ class Tender(NetBoxModel):
     def get_absolute_url(self):
         from django.urls import reverse
         return reverse('plugins:netbox_budget:tender', args=[self.pk])
+
+class BudgetMerge(NetBoxModel):
+    source_plan = models.ForeignKey(
+        BudgetPlan,
+        on_delete=models.PROTECT,
+        related_name='donations_made',
+        verbose_name='Donor Project'
+    )
+    target_plan = models.ForeignKey(
+        BudgetPlan,
+        on_delete=models.PROTECT,
+        related_name='donations_received',
+        verbose_name='Receiver Project'
+    )
+    amount = models.DecimalField(
+        max_digits=20,
+        decimal_places=2,
+        verbose_name='Amount (KZT)'
+    )
+    date = models.DateField(
+        auto_now_add=True
+    )
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['-date']
+
+    def __str__(self):
+        return f"{self.source_plan} → {self.target_plan}: {self.amount} KZT"
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('plugins:netbox_budget:budgetmerge', args=[self.pk])

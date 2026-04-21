@@ -33,6 +33,7 @@ class BudgetPlanTable(NetBoxTable):
             'draft': 'secondary',
             'approved': 'success',
             'cancelled': 'danger',
+            'donated': 'purple',
         }
         color = colors.get(record.status, 'secondary')
         return mark_safe(

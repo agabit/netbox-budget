@@ -3,7 +3,7 @@ from netbox.forms import NetBoxModelForm, NetBoxModelFilterSetForm
 from utilities.forms.fields import CommentField, DynamicModelChoiceField
 from .models import BudgetPlan, Tender
 from netbox_digital_assets.models import Supplier, Contract
-
+from .models import BudgetPlan, Tender, BudgetMerge
 
 class BudgetPlanForm(NetBoxModelForm):
     supplier = DynamicModelChoiceField(
@@ -91,4 +91,20 @@ class TenderFilterForm(NetBoxModelFilterSetForm):
     budget_plan = DynamicModelChoiceField(
         queryset=BudgetPlan.objects.all(),
         required=False
+    )
+class DonateBudgetForm(forms.Form):
+    target_plan = DynamicModelChoiceField(
+        queryset=BudgetPlan.objects.all(),
+        label='Donate TO project'
+    )
+    amount = forms.DecimalField(
+        max_digits=20,
+        decimal_places=2,
+        label='Amount to donate (KZT)',
+        min_value=1
+    )
+    notes = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={'rows': 3}),
+        label='Notes (optional)'
     )
