@@ -22,13 +22,22 @@ class BudgetPlan(NetBoxModel):
         ('work', 'Service'),
         ('set', 'Set'),
     ]
-
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('approved', 'Approved'),
+        ('cancelled', 'Cancelled'),
+    ]
     NOMENCLATURE_CHOICES = [
         ('need', 'Need item code'),
     ]
 
     # Identity
     year = models.IntegerField(choices=YEAR_CHOICES)
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='draft'
+    )
     project_name = models.CharField(max_length=300)
     proxy_number = models.CharField(max_length=100, blank=True)
     nomenclature_code = models.CharField(

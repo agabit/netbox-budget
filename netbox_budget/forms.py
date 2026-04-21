@@ -19,7 +19,7 @@ class BudgetPlanForm(NetBoxModelForm):
     class Meta:
         model = BudgetPlan
         fields = [
-            'year', 'project_name', 'proxy_number', 'nomenclature_code',
+            'year', 'status', 'project_name', 'proxy_number', 'nomenclature_code',
             'device', 'budget_type', 'site_budget', 'unit',
             'planned_quantity', 'price_per_unit', 'agreed_budget',
             'commercial_proposal_url', 'tender_name',
@@ -31,6 +31,10 @@ class BudgetPlanFilterForm(NetBoxModelFilterSetForm):
     model = BudgetPlan
     year = forms.ChoiceField(
         choices=[('', 'All Years')] + BudgetPlan.YEAR_CHOICES,
+        required=False
+    )
+    status = forms.ChoiceField(
+        choices=[('', 'All')] + BudgetPlan.STATUS_CHOICES,
         required=False
     )
     budget_type = forms.ChoiceField(

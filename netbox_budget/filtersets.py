@@ -1,11 +1,16 @@
 import django_filters
+from netbox.filtersets import NetBoxModelFilterSet
 from .models import BudgetPlan, Tender
 
 
-class BudgetPlanFilterSet(django_filters.FilterSet):
+class BudgetPlanFilterSet(NetBoxModelFilterSet):
     year = django_filters.ChoiceFilter(
         choices=BudgetPlan.YEAR_CHOICES,
         label='Year'
+    )
+    status = django_filters.ChoiceFilter(
+        choices=BudgetPlan.STATUS_CHOICES,
+        label='Status'
     )
     budget_type = django_filters.ChoiceFilter(
         choices=BudgetPlan.BUDGET_TYPE_CHOICES,
@@ -18,10 +23,10 @@ class BudgetPlanFilterSet(django_filters.FilterSet):
 
     class Meta:
         model = BudgetPlan
-        fields = ['year', 'budget_type', 'site_budget']
+        fields = ['year', 'status', 'budget_type', 'site_budget']
 
 
-class TenderFilterSet(django_filters.FilterSet):
+class TenderFilterSet(NetBoxModelFilterSet):
     status = django_filters.ChoiceFilter(
         choices=Tender.STATUS_CHOICES,
         label='Status'

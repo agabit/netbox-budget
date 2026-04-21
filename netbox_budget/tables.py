@@ -5,7 +5,11 @@ from .models import BudgetPlan, Tender
 
 class BudgetPlanTable(NetBoxTable):
     year = tables.Column()
-    project_name = tables.Column(linkify=True)
+    status = tables.Column()
+    project_name = tables.LinkColumn(
+        verbose_name='Project Name',
+        attrs={'a': {'target': '_blank'}}
+    )
     proxy_number = tables.Column()
     budget_type = tables.Column()
     site_budget = tables.Column()
@@ -16,6 +20,48 @@ class BudgetPlanTable(NetBoxTable):
         verbose_name='Total Sum (KZT)',
         orderable=False
     )
+    agreed_budget = tables.Column(
+        verbose_name='Agreed Budget (KZT)',
+    )
+    shortfall = tables.Column(
+        verbose_name='Shortfall (KZT)',
+        orderable=False
+    )
+    def render_status(self, value, record):
+        from django.utils.safestring import mark_safe
+        colors = {
+            'draft': 'secondary',
+            'approved': 'success',
+            'cancelled': 'danger',
+        }
+        color = colors.get(record.status, 'secondary')
+        return mark_safe(
+            f'<span class="badge bg-{color} text-white">{record.get_status_display()}</span>'
+        )
+    def render_total_sum(self, value):
+        return f"{abs(float(value)):,.0f} KZT".replace(',', ' ')
+
+    def render_agreed_budget(self, value):
+        return f"{abs(float(value)):,.0f} KZT".replace(',', ' ')
+
+    def render_shortfall(self, value):
+        value = float(value)
+        formatted = f"{abs(value):,.0f}".replace(',', ' ')
+        if value > 0:
+            return f"-{formatted} KZT"
+        elif value < 0:
+            return f"+{formatted} KZT"
+        else:
+            return f"0 KZT"
+
+    def render_price_per_unit(self, value):
+        return f"{abs(float(value)):,.0f} KZT".replace(',', ' ')
+
+    def render_planned_quantity(self, value):
+        value = float(value)
+        if value == int(value):
+            return str(int(value))
+        return str(value)
     agreed_budget = tables.Column()
     shortfall = tables.Column(
         verbose_name='Shortfall (KZT)',
@@ -27,13 +73,13 @@ class BudgetPlanTable(NetBoxTable):
     class Meta(NetBoxTable.Meta):
         model = BudgetPlan
         fields = (
-            'pk', 'id', 'year', 'project_name', 'proxy_number',
+            'pk', 'id', 'year', 'status', 'project_name', 'proxy_number',
             'budget_type', 'site_budget', 'unit', 'planned_quantity',
             'price_per_unit', 'total_sum', 'agreed_budget', 'shortfall',
             'tender_name', 'supplier', 'contract',
         )
         default_columns = (
-            'year', 'project_name', 'proxy_number', 'budget_type',
+            'year', 'status', 'project_name', 'proxy_number', 'budget_type',
             'site_budget', 'total_sum', 'agreed_budget', 'shortfall',
         )
 

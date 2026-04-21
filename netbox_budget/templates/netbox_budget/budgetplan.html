@@ -9,8 +9,21 @@
             <div class="card-body">
                 <table class="table table-hover attr-table">
                     <tr>
+                        <tr>
                         <th scope="row">Year</th>
                         <td>{{ object.year }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Status</th>
+                        <td>
+                            {% if object.status == 'approved' %}
+                                <span class="badge bg-success text-white">{{ object.get_status_display }}</span>
+                            {% elif object.status == 'cancelled' %}
+                                <span class="badge bg-danger text-white">{{ object.get_status_display }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary text-white">{{ object.get_status_display }}</span>
+                            {% endif %}
+                        </td>
                     </tr>
                     <tr>
                         <th scope="row">Project Name</th>
@@ -111,9 +124,7 @@
                         <th scope="row">Commercial Proposal</th>
                         <td>
                             {% if object.commercial_proposal_url %}
-                                <a href="{{ object.commercial_proposal_url }}" target="_blank">
-                                    Open file
-                                </a>
+                                <code>{{ object.commercial_proposal_url }}<code>
                             {% else %}
                                 —
                             {% endif %}
