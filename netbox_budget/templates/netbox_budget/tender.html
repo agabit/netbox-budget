@@ -21,11 +21,14 @@
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row">Budget Plan</th>
+                        <th scope="row">Budget Plans</th>
                         <td>
-                            <a href="{{ object.budget_plan.get_absolute_url }}">
-                                {{ object.budget_plan }}
-                            </a>
+			    {% for plan in object.budget_plans.all %}
+                                <a href="{{ plan.get_absolute_url }}">{{ plan }}</a>
+                                {% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                                —
+                            {% endfor %}
                         </td>
                     </tr>
                     <tr>
@@ -53,46 +56,57 @@
             <h5 class="card-header">Budget Plan Details</h5>
             <div class="card-body">
                 <table class="table table-hover attr-table">
+                    {% for plan in object.budget_plans.all %}
+                    <tr>
+                        <th scope="row" colspan="2" class="table-secondary">
+                            <a href="{{ plan.get_absolute_url }}">{{ plan.project_name }}</a>
+                        </th>
+                    </tr>
                     <tr>
                         <th scope="row">Year</th>
-                        <td>{{ object.budget_plan.year }}</td>
+                        <td>{{ plan.year }}</td>
                     </tr>
                     <tr>
                         <th scope="row">PROXY Number</th>
-                        <td>{{ object.budget_plan.proxy_number|default:"—" }}</td>
+                        <td>{{ plan.proxy_number|default:"—" }}</td>
                     </tr>
                     <tr>
                         <th scope="row">Budget Type</th>
-                        <td>{{ object.budget_plan.get_budget_type_display }}</td>
+                        <td>{{ plan.get_budget_type_display }}</td>
                     </tr>
                     <tr>
                         <th scope="row">Site / Budget</th>
-                        <td>{{ object.budget_plan.get_site_budget_display }}</td>
+                        <td>{{ plan.get_site_budget_display }}</td>
                     </tr>
                     <tr>
                         <th scope="row">Planned Quantity</th>
-                        <td>{{ object.budget_plan.planned_quantity }}</td>
+                        <td>{{ plan.planned_quantity }}</td>
                     </tr>
                     <tr>
                         <th scope="row">Total Sum (KZT)</th>
-                        <td><strong>{{ object.budget_plan.total_sum|format_kzt }}</strong></td>
+                        <td><strong>{{ plan.total_sum|format_kzt }}</strong></td>
                     </tr>
                     <tr>
                         <th scope="row">Agreed Budget (KZT)</th>
-                        <td>{{ object.budget_plan.agreed_budget|format_kzt }}</td>
+                        <td>{{ plan.agreed_budget|format_kzt }}</td>
                     </tr>
                     <tr>
                         <th scope="row">Shortfall (KZT)</th>
                         <td>
-                            {% if object.budget_plan.shortfall > 0 %}
-                                <span class="badge bg-danger text-white">{{ object.budget_plan.shortfall|format_kzt_signed }}</span>
-                            {% elif object.budget_plan.shortfall < 0 %}
-                                <span class="badge bg-success text-white">{{ object.budget_plan.shortfall|format_kzt_signed }}</span>
+                            {% if plan.shortfall > 0 %}
+                                <span class="badge bg-danger text-white">{{ plan.shortfall|format_kzt_signed }}</span>
+                            {% elif plan.shortfall < 0 %}
+                                <span class="badge bg-success text-white">{{ plan.shortfall|format_kzt_signed }}</span>
                             {% else %}
                                 <span class="badge bg-secondary text-white">0 KZT</span>
                             {% endif %}
                         </td>
                     </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-muted">No budget plans linked</td>
+                    </tr>
+                    {% endfor %}
                 </table>
             </div>
         </div>

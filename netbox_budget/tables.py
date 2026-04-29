@@ -87,7 +87,10 @@ class BudgetPlanTable(NetBoxTable):
 
 class TenderTable(NetBoxTable):
     tender_name = tables.Column(linkify=True)
-    budget_plan = tables.Column(linkify=True)
+    budget_plans = tables.ManyToManyColumn(
+        verbose_name='Budget Plans',
+        linkify_item=True
+    )
     status = tables.Column()
     supplier = tables.Column(linkify=True)
     winner_supplier = tables.Column(linkify=True)

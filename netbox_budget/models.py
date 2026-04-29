@@ -149,10 +149,10 @@ class Tender(NetBoxModel):
     }
 
     # Link to BudgetPlan
-    budget_plan = models.ForeignKey(
+    budget_plans = models.ManyToManyField(
         BudgetPlan,
-        on_delete=models.PROTECT,
-        related_name='tenders'
+        related_name='tenders',
+        blank=True
     )
 
     # Tender specific
@@ -191,7 +191,7 @@ class Tender(NetBoxModel):
     expected_delivery_date = models.DateField(null=True, blank=True)
 
     class Meta:
-        ordering = ['-budget_plan__year', 'tender_name']
+        ordering = ['tender_name']
 
     def __str__(self):
         return f'{self.tender_name} ({self.get_status_display()})'

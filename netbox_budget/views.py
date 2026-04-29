@@ -108,7 +108,7 @@ class DonateBudgetView(generic.ObjectView):
 # Tender views
 class TenderListView(generic.ObjectListView):
     queryset = models.Tender.objects.prefetch_related(
-        'budget_plan', 'supplier', 'winner_supplier', 'contract'
+        'budget_plans', 'supplier', 'winner_supplier', 'contract'
     )
     table = tables.TenderTable
     filterset = TenderFilterSet
@@ -117,9 +117,8 @@ class TenderListView(generic.ObjectListView):
 
 class TenderView(generic.ObjectView):
     queryset = models.Tender.objects.prefetch_related(
-        'budget_plan', 'supplier', 'winner_supplier', 'contract'
+        'budget_plans', 'supplier', 'winner_supplier', 'contract'
     )
-
 
 class TenderEditView(generic.ObjectEditView):
     queryset = models.Tender.objects.all()
