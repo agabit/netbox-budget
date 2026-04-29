@@ -42,8 +42,8 @@
                         <td>{{ object.proxy_number|default:"—" }}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Nomenclature Code</th>
-                        <td>{{ object.nomenclature_code|default:"—" }}</td>
+                        <th scope="row">Item Code</th>
+                        <td>{% if object.item_code %}<a href="{{ object.item_code.get_absolute_url }}">{{ object.item_code }}</a>{% else %}—{% endif %}</td>
                     </tr>
                     <tr>
                         <th scope="row">Device</th>

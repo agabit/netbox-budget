@@ -8,7 +8,6 @@ class BudgetPlanIndex(SearchIndex):
     fields = (
         ('project_name', 100),
         ('proxy_number', 100),
-        ('nomenclature_code', 200),
         ('tender_name', 200),
     )
 

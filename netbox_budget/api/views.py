@@ -1,10 +1,14 @@
 from netbox.api.viewsets import NetBoxModelViewSet
-from ..models import BudgetPlan, Tender
-from .serializers import BudgetPlanSerializer, TenderSerializer
+from ..models import BudgetPlan, Tender, ItemCode
+from .serializers import BudgetPlanSerializer, TenderSerializer, ItemCodeSerializer
 from .filtersets import BudgetPlanFilterSet
 
+class ItemCodeViewSet(NetBoxModelViewSet):
+    queryset = ItemCode.objects.all()
+    serializer_class = ItemCodeSerializer
+
 class BudgetPlanViewSet(NetBoxModelViewSet):
-    queryset = BudgetPlan.objects.prefetch_related("supplier", "contract")
+    queryset = BudgetPlan.objects.prefetch_related("supplier", "contract", "item_code")
     serializer_class = BudgetPlanSerializer
     filterset_class = BudgetPlanFilterSet
 

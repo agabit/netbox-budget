@@ -1,10 +1,36 @@
 from django import forms
 from netbox.forms import NetBoxModelForm, NetBoxModelFilterSetForm
 from utilities.forms.fields import CommentField, DynamicModelChoiceField, DynamicModelMultipleChoiceField
-from .models import BudgetPlan, Tender, BudgetMerge
+from .models import BudgetPlan, Tender, BudgetMerge, ItemCode
 from netbox_digital_assets.models import Supplier, Contract
 
+class ItemCodeForm(NetBoxModelForm):
+    comments = CommentField()
+
+    class Meta:
+        model = ItemCode
+        fields = [
+            "name", "status", "short_name_kaz", "specification_kaz",
+            "short_name_rus", "specification_rus", "pdf_file",
+            "cancelled_date", "comments",
+        ]
+        widgets = {
+            "cancelled_date": forms.DateInput(attrs={"type": "date"}),
+        }
+
+class ItemCodeFilterForm(NetBoxModelFilterSetForm):
+    model = ItemCode
+    status = forms.ChoiceField(
+        choices=[("", "All")] + ItemCode.STATUS_CHOICES,
+        required=False
+    )
+
 class BudgetPlanForm(NetBoxModelForm):
+    item_code = DynamicModelChoiceField(
+        queryset=ItemCode.objects.all(),
+        required=False,
+        label="Item Code"
+    )
     supplier = DynamicModelChoiceField(
         queryset=Supplier.objects.all(),
         required=False
@@ -18,7 +44,7 @@ class BudgetPlanForm(NetBoxModelForm):
     class Meta:
         model = BudgetPlan
         fields = [
-            "year", "status", "project_name", "proxy_number", "nomenclature_code",
+            "year", "status", "project_name", "proxy_number", "item_code",
             "device", "budget_type", "site_budget", "unit",
             "planned_quantity", "price_per_unit", "agreed_budget",
             "commercial_proposal_url", "tender_name",
@@ -79,7 +105,7 @@ class TenderForm(NetBoxModelForm):
             "budget_plan_year", "budget_plans", "tender_name", "status",
             "start_date", "end_date", "responsible_person",
             "supplier", "winner_supplier", "contract",
-            "expected_delivery_date", "tags",
+            "expected_delivery_date", "contract_sum", "tags",
         ]
         widgets = {
             "start_date": forms.DateInput(attrs={"type": "date"}),

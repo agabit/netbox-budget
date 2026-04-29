@@ -1,6 +1,42 @@
 from django.db import models
+from django.utils import timezone
 from netbox.models import NetBoxModel
 
+class ItemCode(NetBoxModel):
+
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('not_active', 'Not Active'),
+    ]
+
+    name = models.CharField(max_length=500, verbose_name='Name')
+    short_name_kaz = models.CharField(max_length=1000, blank=True, verbose_name='Short Name KAZ')
+    specification_kaz = models.TextField(blank=True, verbose_name='Specification KAZ')
+    short_name_rus = models.CharField(max_length=1000, blank=True, verbose_name='Short Name RUS')
+    specification_rus = models.TextField(blank=True, verbose_name='Specification RUS')
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='active'
+    )
+    pdf_file = models.FileField(
+        upload_to='item_codes/',
+        null=True,
+        blank=True,
+        verbose_name='Commercial Proposal (PDF)'
+    )
+    cancelled_date = models.DateField(null=True, blank=True, verbose_name='Cancelled Date')
+    comments = models.TextField(blank=True, verbose_name='Comments')
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('plugins:netbox_budget:itemcode', args=[self.pk])
 
 class BudgetPlan(NetBoxModel):
 
@@ -41,10 +77,13 @@ class BudgetPlan(NetBoxModel):
     )
     project_name = models.CharField(max_length=300)
     proxy_number = models.CharField(max_length=100, blank=True)
-    nomenclature_code = models.CharField(
-        max_length=200,
+    item_code = models.ForeignKey(
+        'ItemCode',
+        on_delete=models.SET_NULL,
+        null=True,
         blank=True,
-        help_text='Nomenclature item code or "Need item code"'
+        related_name='budget_plans',
+        verbose_name='Item Code'
     )
     device = models.ForeignKey(
         'dcim.Device',
@@ -189,6 +228,13 @@ class Tender(NetBoxModel):
         related_name='tenders'
     )
     expected_delivery_date = models.DateField(null=True, blank=True)
+    contract_sum = models.DecimalField(
+        max_digits=20,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name='Contract Sum (KZT)'
+    )
 
     class Meta:
         ordering = ['tender_name']
@@ -205,6 +251,13 @@ class Tender(NetBoxModel):
             'cancelled': 'danger',
         }
         return colors.get(self.status, 'secondary')
+
+    @property
+    def economy(self):
+        if not self.contract_sum:
+            return None
+        total_agreed = sum(p.agreed_budget for p in self.budget_plans.all())
+        return total_agreed - self.contract_sum
 
     def get_absolute_url(self):
         from django.urls import reverse

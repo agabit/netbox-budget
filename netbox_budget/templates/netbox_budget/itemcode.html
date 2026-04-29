@@ -1,0 +1,121 @@
+{% extends "generic/object.html" %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col col-md-6">
+        <div class="card">
+            <h5 class="card-header">Item Code</h5>
+            <div class="card-body">
+                <table class="table table-hover attr-table">
+                    <tr>
+                        <th scope="row">Name</th>
+                        <td>{{ object.name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Status</th>
+                        <td>
+                            {% if object.status == "active" %}
+                                <span class="badge bg-success text-white">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary text-white">Not Active</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Created Date</th>
+                        <td>{{ object.created|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Cancelled Date</th>
+                        <td>{{ object.cancelled_date|default:"—" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <h5 class="card-header">Russian</h5>
+            <div class="card-body">
+                <table class="table table-hover attr-table">
+                    <tr>
+                        <th scope="row">Short Name RUS</th>
+                        <td>{{ object.short_name_rus|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Specification RUS</th>
+                        <td><pre class="mb-0" style="white-space: pre-wrap;">{{ object.specification_rus|default:"—" }}</pre></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <h5 class="card-header">Kazakh</h5>
+            <div class="card-body">
+                <table class="table table-hover attr-table">
+                    <tr>
+                        <th scope="row">Short Name KAZ</th>
+                        <td>{{ object.short_name_kaz|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Specification KAZ</th>
+                        <td><pre class="mb-0" style="white-space: pre-wrap;">{{ object.specification_kaz|default:"—" }}</pre></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col col-md-6">
+        <div class="card">
+            <h5 class="card-header">Commercial Proposal</h5>
+            <div class="card-body">
+                <table class="table table-hover attr-table">
+                    <tr>
+                        <th scope="row">PDF File</th>
+                        <td>
+                            {% if object.pdf_file %}
+                                <a href="{{ object.pdf_file.url }}" target="_blank">
+                                    <i class="mdi mdi-file-pdf-box"></i> Download PDF
+                                </a>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <h5 class="card-header">Comments</h5>
+            <div class="card-body">
+                {{ object.comments|default:"—" }}
+            </div>
+        </div>
+        <div class="card mt-3">
+            <h5 class="card-header">Linked Budget Plans</h5>
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Project Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for plan in object.budget_plans.all %}
+                        <tr>
+                            <td>{{ plan.year }}</td>
+                            <td><a href="{{ plan.get_absolute_url }}">{{ plan.project_name }}</a></td>
+                            <td>{{ plan.get_status_display }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-muted">No budget plans linked</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

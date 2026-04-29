@@ -144,6 +144,32 @@
                             {% endif %}
                         </td>
                     </tr>
+		    <tr>
+                        <th scope="row">Contract Sum (KZT)</th>
+                        <td>
+                            {% if object.contract_sum %}
+                                <strong>{{ object.contract_sum|format_kzt }}</strong>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Economy (KZT)</th>
+                        <td>
+                            {% if object.economy != None %}
+                                {% if object.economy > 0 %}
+                                    <span class="badge bg-success text-white">{{ object.economy|format_kzt }}</span>
+                                {% elif object.economy < 0 %}
+                                    <span class="badge bg-danger text-white">{{ object.economy|format_kzt }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary text-white">0 KZT</span>
+                                {% endif %}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
                 </table>
             </div>
         </div>
