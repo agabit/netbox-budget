@@ -34,6 +34,26 @@ class ItemCode(NetBoxModel):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        # Delete old PDF if replaced
+        if self.pk:
+            try:
+                old = ItemCode.objects.get(pk=self.pk)
+                if old.pdf_file and old.pdf_file != self.pdf_file:
+                    import os
+                    if os.path.isfile(old.pdf_file.path):
+                        os.remove(old.pdf_file.path)
+            except ItemCode.DoesNotExist:
+                pass
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        # Delete PDF file when record is deleted
+        import os
+        if self.pdf_file and os.path.isfile(self.pdf_file.path):
+            os.remove(self.pdf_file.path)
+        super().delete(*args, **kwargs)
+
     def get_absolute_url(self):
         from django.urls import reverse
         return reverse('plugins:netbox_budget:itemcode', args=[self.pk])

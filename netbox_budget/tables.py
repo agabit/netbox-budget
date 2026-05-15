@@ -17,7 +17,7 @@ class ItemCodeTable(NetBoxTable):
         }
         color = colors.get(record.status, "secondary")
         return mark_safe(
-            f"<span class=\"badge bg-{color} text-white\">{record.get_status_display()}</span>"
+            f'<span class="badge bg-{color} text-white">{record.get_status_display()}</span>'
         )
 
     class Meta(NetBoxTable.Meta):
@@ -68,7 +68,7 @@ class BudgetPlanTable(NetBoxTable):
         }
         color = colors.get(record.status, "secondary")
         return mark_safe(
-            f"<span class=\"badge bg-{color} text-white\">{record.get_status_display()}</span>"
+            f'<span class="badge bg-{color} text-white">{record.get_status_display()}</span>'
         )
 
     def render_total_sum(self, value):
@@ -116,10 +116,18 @@ class TenderTable(NetBoxTable):
         verbose_name="Budget Plans",
         linkify_item=True
     )
+    budget_type = tables.Column(
+        verbose_name="Budget Type",
+        empty_values=()
+    )
     status = tables.Column()
     supplier = tables.Column(linkify=True)
     winner_supplier = tables.Column(linkify=True)
     contract = tables.Column(linkify=True)
+
+    def render_budget_type(self, record):
+        types = record.budget_plans.values_list("budget_type", flat=True).distinct()
+        return ", ".join([t.upper() for t in types]) if types else "—"
 
     def render_status(self, value, record):
         from django.utils.safestring import mark_safe
@@ -131,13 +139,13 @@ class TenderTable(NetBoxTable):
         }
         color = colors.get(record.status, "secondary")
         return mark_safe(
-            f"<span class=\"badge bg-{color} text-white\">{record.get_status_display()}</span>"
+            f'<span class="badge bg-{color} text-white">{record.get_status_display()}</span>'
         )
 
     class Meta(NetBoxTable.Meta):
         model = Tender
         fields = (
-            "pk", "id", "tender_name", "budget_plans", "status",
+            "pk", "id", "tender_name", "budget_plans", "budget_type", "status",
             "start_date", "end_date", "responsible_person",
             "supplier", "winner_supplier", "contract",
             "expected_delivery_date",

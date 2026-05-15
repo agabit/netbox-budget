@@ -24,6 +24,18 @@ class ItemCodeFilterForm(NetBoxModelFilterSetForm):
         choices=[("", "All")] + ItemCode.STATUS_CHOICES,
         required=False
     )
+    name = forms.CharField(
+        required=False,
+        label="Name"
+    )
+    short_name_kaz = forms.CharField(
+        required=False,
+        label="Short Name KAZ"
+    )
+    short_name_rus = forms.CharField(
+        required=False,
+        label="Short Name RUS"
+    )
 
 class BudgetPlanForm(NetBoxModelForm):
     item_code = DynamicModelChoiceField(
@@ -69,6 +81,19 @@ class BudgetPlanFilterForm(NetBoxModelFilterSetForm):
         choices=[("", "All Sites")] + BudgetPlan.SITE_CHOICES,
         required=False
     )
+    proxy_number = forms.CharField(
+        required=False,
+        label="Proxy Number"
+    )
+    tender_name = forms.CharField(
+        required=False,
+        label="Tender Name"
+    )
+    item_code = DynamicModelChoiceField(
+        queryset=ItemCode.objects.all(),
+        required=False,
+        label="Item Code"
+    )
 
 class TenderForm(NetBoxModelForm):
     budget_plan_year = forms.ChoiceField(
@@ -77,11 +102,18 @@ class TenderForm(NetBoxModelForm):
         label="Budget Plan Year",
         help_text="Select a year to filter the Budget Plans list below"
     )
+    budget_plan_type = forms.ChoiceField(
+        choices=[("", "--- Select Type ---")] + BudgetPlan.BUDGET_TYPE_CHOICES,
+        required=False,
+        label="Budget Type",
+        help_text="Select a type to filter the Budget Plans list below"
+    )
     budget_plans = DynamicModelMultipleChoiceField(
         queryset=BudgetPlan.objects.all(),
         label="Budget Plans",
         query_params={
             "year": "$budget_plan_year",
+            "budget_type": "$budget_plan_type",
         },
         required=False
     )
@@ -102,7 +134,7 @@ class TenderForm(NetBoxModelForm):
     class Meta:
         model = Tender
         fields = [
-            "budget_plan_year", "budget_plans", "tender_name", "status",
+            "budget_plan_year", "budget_plan_type", "budget_plans", "tender_name", "status",
             "start_date", "end_date", "responsible_person",
             "supplier", "winner_supplier", "contract",
             "expected_delivery_date", "contract_sum", "tags",
@@ -124,10 +156,29 @@ class TenderFilterForm(NetBoxModelFilterSetForm):
         required=False,
         label="Budget Plan Year"
     )
+    budget_plan_type = forms.ChoiceField(
+        choices=[("", "All Types")] + BudgetPlan.BUDGET_TYPE_CHOICES,
+        required=False,
+        label="Budget Type"
+    )
     budget_plans = DynamicModelMultipleChoiceField(
         queryset=BudgetPlan.objects.all(),
         required=False,
         label="Budget Plan"
+    )
+    tender_name = forms.CharField(
+        required=False,
+        label="Tender Name"
+    )
+    winner_supplier = DynamicModelChoiceField(
+        queryset=Supplier.objects.all(),
+        required=False,
+        label="Winner Supplier"
+    )
+    contract = DynamicModelChoiceField(
+        queryset=Contract.objects.all(),
+        required=False,
+        label="Contract"
     )
 
 class DonateBudgetForm(forms.Form):
