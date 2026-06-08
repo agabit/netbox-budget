@@ -1,5 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
 from netbox.views import generic
 from . import models, tables, forms
 from .filtersets import BudgetPlanFilterSet, TenderFilterSet, ItemCodeFilterSet
@@ -113,6 +115,31 @@ class DonateBudgetView(generic.ObjectView):
             "source_plan": source_plan,
         })
 
+class UndonateBudgetView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        merge = get_object_or_404(models.BudgetMerge, pk=pk)
+        source_plan = merge.source_plan
+        target_plan = merge.target_plan
+        amount = merge.amount
+
+        # Return amount to source
+        source_plan.agreed_budget += amount
+        if source_plan.status == 'donated' and source_plan.agreed_budget > 0:
+            source_plan.status = 'approved'
+        source_plan.save()
+
+        # Subtract amount from target
+        target_plan.agreed_budget -= amount
+        target_plan.save()
+
+        # Delete merge record
+        merge.delete()
+
+        messages.success(
+            request,
+            f'Successfully returned {amount} KZT from "{target_plan.project_name}" back to "{source_plan.project_name}"'
+        )
+        return redirect(source_plan.get_absolute_url())
 
 # Tender views
 class TenderListView(generic.ObjectListView):

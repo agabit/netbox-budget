@@ -19,6 +19,7 @@ urlpatterns = [
     path("budget-plans/<int:pk>/delete/", views.BudgetPlanDeleteView.as_view(), name="budgetplan_delete"),
     path("budget-plans/<int:pk>/changelog/", ObjectChangeLogView.as_view(), name="budgetplan_changelog", kwargs={"model": models.BudgetPlan}),
     path("budget-plans/<int:pk>/donate/", views.DonateBudgetView.as_view(), name="budgetplan_donate"),
+    path("budget-plans/undonate/<int:pk>/", views.UndonateBudgetView.as_view(), name="budgetplan_undonate"),
 
     # Tenders
     path("tenders/", views.TenderListView.as_view(), name="tender_list"),

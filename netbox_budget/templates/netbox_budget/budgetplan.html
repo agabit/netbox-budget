@@ -186,6 +186,7 @@
                             <th>Donated To</th>
                             <th>Amount</th>
                             <th>Notes</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -195,6 +196,13 @@
                             <td><a href="{{ donation.target_plan.get_absolute_url }}">{{ donation.target_plan.project_name }}</a></td>
                             <td><span class="badge bg-danger text-white">{{ donation.amount|format_kzt }}</span></td>
                             <td>{{ donation.notes|default:"—" }}</td>
+                            <td>
+                                <a href="{% url 'plugins:netbox_budget:budgetplan_undonate' donation.pk %}"
+                                   class="btn btn-sm btn-warning"
+                                   onclick="return confirm('Return {{ donation.amount }} KZT back to this project?')">
+                                   Undonate
+                                </a>
+                            </td>
                         </tr>
                         {% empty %}
                         <tr>

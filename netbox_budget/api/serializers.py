@@ -1,5 +1,5 @@
 from netbox.api.serializers import NetBoxModelSerializer
-from ..models import BudgetPlan, Tender, ItemCode
+from ..models import BudgetPlan, Tender, ItemCode, BudgetMerge
 
 class ItemCodeSerializer(NetBoxModelSerializer):
     class Meta:
@@ -31,4 +31,12 @@ class TenderSerializer(NetBoxModelSerializer):
             "status", "start_date", "end_date", "responsible_person",
             "supplier", "winner_supplier", "contract",
             "expected_delivery_date",
+        ]
+
+class BudgetMergeSerializer(NetBoxModelSerializer):
+    class Meta:
+        model = BudgetMerge
+        fields = [
+            "id", "url", "display", "source_plan", "target_plan",
+            "amount", "date", "notes",
         ]

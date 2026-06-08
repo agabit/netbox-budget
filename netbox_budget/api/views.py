@@ -1,6 +1,6 @@
 from netbox.api.viewsets import NetBoxModelViewSet
-from ..models import BudgetPlan, Tender, ItemCode
-from .serializers import BudgetPlanSerializer, TenderSerializer, ItemCodeSerializer
+from ..models import BudgetPlan, Tender, ItemCode, BudgetMerge
+from .serializers import BudgetPlanSerializer, TenderSerializer, ItemCodeSerializer, BudgetMergeSerializer
 from .filtersets import BudgetPlanFilterSet, ItemCodeFilterSet
 
 class ItemCodeViewSet(NetBoxModelViewSet):
@@ -18,3 +18,7 @@ class TenderViewSet(NetBoxModelViewSet):
         "budget_plans", "supplier", "winner_supplier", "contract"
     )
     serializer_class = TenderSerializer
+
+class BudgetMergeViewSet(NetBoxModelViewSet):
+    queryset = BudgetMerge.objects.all()
+    serializer_class = BudgetMergeSerializer
