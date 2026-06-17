@@ -60,7 +60,7 @@ class BudgetPlanForm(NetBoxModelForm):
             "device", "budget_type", "site_budget", "unit",
             "planned_quantity", "price_per_unit", "agreed_budget",
             "commercial_proposal_url", "tender_name",
-            "supplier", "contract", "tags",
+            "supplier", "contract", "comments", "tags",
         ]
 
 class BudgetPlanFilterForm(NetBoxModelFilterSetForm):
@@ -137,7 +137,7 @@ class TenderForm(NetBoxModelForm):
             "budget_plan_year", "budget_plan_type", "budget_plans", "tender_name", "status",
             "start_date", "end_date", "responsible_person",
             "supplier", "winner_supplier", "contract",
-            "expected_delivery_date", "contract_sum", "tags",
+            "expected_delivery_date", "contract_sum", "comments", "tags",
         ]
         widgets = {
             "start_date": forms.DateInput(attrs={"type": "date"}),

@@ -1,5 +1,6 @@
 {% extends 'generic/object.html' %}
 {% load budget_filters %}
+{% load helpers %}
 
 {% block content %}
 <div class="row mb-3">
@@ -171,6 +172,20 @@
                         </td>
                     </tr>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col col-md-12">
+        <div class="card">
+            <h5 class="card-header">Comments</h5>
+            <div class="card-body">
+                {% if object.comments %}
+                    <div class="rendered-markdown">{{ object.comments|markdown }}</div>
+                {% else %}
+                    <span class="text-muted">No comments</span>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -172,6 +172,7 @@ class BudgetPlan(NetBoxModel):
         related_name='budget_plans'
     )
 
+    comments = models.TextField(blank=True, verbose_name='Comments')
     class Meta:
         ordering = ['-year', 'project_name']
 
@@ -256,6 +257,7 @@ class Tender(NetBoxModel):
         verbose_name='Contract Sum (KZT)'
     )
 
+    comments = models.TextField(blank=True, verbose_name='Comments')
     class Meta:
         ordering = ['tender_name']
 
