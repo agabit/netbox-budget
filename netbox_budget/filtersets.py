@@ -50,7 +50,7 @@ class BudgetPlanFilterSet(NetBoxModelFilterSet):
         lookup_expr="icontains",
         label="Tender Name"
     )
-    item_code = django_filters.ModelChoiceFilter(
+    item_code = django_filters.ModelMultipleChoiceFilter(
         queryset=ItemCode.objects.all(),
         label="Item Code"
     )
