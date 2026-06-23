@@ -56,7 +56,10 @@ class BudgetPlanTable(NetBoxTable):
     )
     supplier = tables.Column(linkify=True)
     contract = tables.Column(linkify=True)
-    item_code = tables.Column(linkify=True, verbose_name="Item Code")
+    item_code = tables.ManyToManyColumn(
+        verbose_name="Item Code",
+        linkify_item=True
+    )
 
     def render_status(self, value, record):
         from django.utils.safestring import mark_safe

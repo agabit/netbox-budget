@@ -97,10 +97,8 @@ class BudgetPlan(NetBoxModel):
     )
     project_name = models.CharField(max_length=300)
     proxy_number = models.CharField(max_length=100, blank=True)
-    item_code = models.ForeignKey(
+    item_code = models.ManyToManyField(
         'ItemCode',
-        on_delete=models.SET_NULL,
-        null=True,
         blank=True,
         related_name='budget_plans',
         verbose_name='Item Code'

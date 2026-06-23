@@ -38,7 +38,7 @@ class ItemCodeFilterForm(NetBoxModelFilterSetForm):
     )
 
 class BudgetPlanForm(NetBoxModelForm):
-    item_code = DynamicModelChoiceField(
+    item_code = DynamicModelMultipleChoiceField(
         queryset=ItemCode.objects.all(),
         required=False,
         label="Item Code"
@@ -89,7 +89,7 @@ class BudgetPlanFilterForm(NetBoxModelFilterSetForm):
         required=False,
         label="Tender Name"
     )
-    item_code = DynamicModelChoiceField(
+    item_code = DynamicModelMultipleChoiceField(
         queryset=ItemCode.objects.all(),
         required=False,
         label="Item Code"

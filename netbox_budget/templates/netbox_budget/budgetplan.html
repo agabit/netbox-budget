@@ -44,7 +44,13 @@
                     </tr>
                     <tr>
                         <th scope="row">Item Code</th>
-                        <td>{% if object.item_code %}<a href="{{ object.item_code.get_absolute_url }}">{{ object.item_code }}</a>{% else %}—{% endif %}</td>
+                        <td>
+                            {% for ic in object.item_code.all %}
+                                <a href="{{ ic.get_absolute_url }}">{{ ic }}</a>{% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                                —
+                            {% endfor %}
+                        </td>
                     </tr>
                     <tr>
                         <th scope="row">Device</th>
