@@ -108,6 +108,17 @@ class TenderForm(NetBoxModelForm):
         label="Budget Type",
         help_text="Select a type to filter the Budget Plans list below"
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Auto-fill year and type from existing budget plans when editing
+        if self.instance and self.instance.pk:
+            plans = self.instance.budget_plans.all()
+            if plans.exists():
+                first_plan = plans.first()
+                self.initial['budget_plan_year'] = first_plan.year
+                self.initial['budget_plan_type'] = first_plan.budget_type
+
     budget_plans = DynamicModelMultipleChoiceField(
         queryset=BudgetPlan.objects.all(),
         label="Budget Plans",

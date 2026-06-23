@@ -4,7 +4,7 @@ from .models import BudgetPlan, Tender, ItemCode
 
 
 class ItemCodeTable(NetBoxTable):
-    name = tables.LinkColumn(verbose_name="Name")
+    name = tables.LinkColumn(verbose_name="Name", attrs={"a": {"target": "_blank"}})
     status = tables.Column()
     short_name_rus = tables.Column(verbose_name="Short Name RUS")
     short_name_kaz = tables.Column(verbose_name="Short Name KAZ")
@@ -111,7 +111,7 @@ class BudgetPlanTable(NetBoxTable):
 
 
 class TenderTable(NetBoxTable):
-    tender_name = tables.Column(linkify=True)
+    tender_name = tables.LinkColumn(attrs={"a": {"target": "_blank"}})
     budget_plans = tables.ManyToManyColumn(
         verbose_name="Budget Plans",
         linkify_item=True
